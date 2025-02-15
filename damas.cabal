@@ -13,4 +13,5 @@ executable damas
                       lens
     hs-source-dirs:   app
     default-language: Haskell2010
-    other-modules: GameState, HandleSelection, Utils
+    other-modules:    GameState, HandleSelection, Utils
+    extra-libraries:  ncursesw
