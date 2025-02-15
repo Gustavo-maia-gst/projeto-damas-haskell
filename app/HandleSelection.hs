@@ -6,15 +6,12 @@ import Utils
 -- import MovimentByFinder
 
 checkSelection :: GameState -> Bool
-checkSelection state
-    | state ^. turn == P1 && checkBit 2 posMatrix == True = True
-    | state ^. turn == P2 && checkBit 3 posMatrix == True = True
-    | otherwise = False
+checkSelection state =
+        cell ^. isSelected
     where 
         cursorX = state ^. cursor ._1
         cursorY = state ^. cursor ._2
-        posMatrix = (state ^. matrix) !! cursorX !! cursorY
-
+        cell = getCell cursorY cursorX state
 
 handleSelection :: GameState -> GameState
 handleSelection state 
@@ -25,8 +22,8 @@ handleSelection state
 
         number = if state ^. turn == P1 then 4 else 8
         
-        stateAux = state & selected .~ (cursorX, cursorY, True)
-        newState = changeNumberInMatrix cursorX cursorY (number + 1) stateAux
+        stateAux = state & selected .~ Just (cursorX, cursorY)
+        newState = stateAux & matrix . ix cursorX . ix cursorY . isSelected .~ False
         -- newState = movimentByFinder state2
     in
         newState

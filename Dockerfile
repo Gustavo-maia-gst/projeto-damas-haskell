@@ -1,10 +1,12 @@
-FROM haskell:9.2.8
+FROM haskell:latest
 
-RUN apt-get update && apt-get install -y libncurses-dev && rm -rf /var/lib/apt/lists/*
+RUN apt-get update &&\
+    apt-get install -y libncurses-dev
 
 RUN cabal update
-RUN cabal install --lib hscurses
 
 COPY . /app
 
 WORKDIR /app
+
+RUN cabal install
