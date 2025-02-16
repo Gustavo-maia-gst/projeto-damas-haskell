@@ -6,24 +6,24 @@ import Utils
 -- import MovimentByFinder
 
 checkSelection :: GameState -> Bool
-checkSelection state =
-        cell ^. isSelected
+checkSelection state = 
+    playerInCell == Just playerInTurn 
     where 
-        cursorX = state ^. cursor ._1
-        cursorY = state ^. cursor ._2
+        cursorY = state ^. cursor ._1
+        cursorX = state ^. cursor ._2
         cell = getCell cursorY cursorX state
+        playerInCell = cell ^. player
+        playerInTurn = state ^. turn
 
 handleSelection :: GameState -> GameState
 handleSelection state 
     | not (checkSelection state) = state
-    | otherwise = let
-        cursorX = state ^. cursor . _1
-        cursorY = state ^. cursor . _2
+    | otherwise = newState
+        where
+        cursorY = state ^. cursor . _1
+        cursorX = state ^. cursor . _2
 
-        number = if state ^. turn == P1 then 4 else 8
-        
-        stateAux = state & selected .~ Just (cursorX, cursorY)
-        newState = stateAux & matrix . ix cursorX . ix cursorY . isSelected .~ False
+        stateAux = state & selected .~ Just (cursorY, cursorX)
+        -- acho que deve deixar ele selecionado e o cursor tem preferencia pelo selecionado
+        newState = stateAux & matrix . ix cursorY . ix cursorX . isSelected .~ False
         -- newState = movimentByFinder state2
-    in
-        newState
