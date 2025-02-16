@@ -8,6 +8,8 @@ import Render as R
 import Control.Monad (when)
 import Control.Lens
 import System.Exit (exitSuccess)
+import Navigation
+import HandleAction
 
 main :: IO ()
 main = do
@@ -20,10 +22,14 @@ eventLoop state = do
   R.refresh state
   key <- getCh 
 
-  case key of
-    KeyChar 'w' -> R.refresh state 
-    KeyChar 's' -> R.refresh state 
-    KeyChar 'a' -> R.refresh state
-    KeyChar 'd' -> R.refresh state 
-    KeyChar 'q' -> endWin >> exitSuccess
-    _           -> R.refresh state
+  let newState = case key of
+          KeyChar 'w' -> handleUp state
+          KeyChar 's' -> handleDown state
+          KeyChar 'a' -> handleLeft state
+          KeyChar 'd' -> handleRight state
+          KeyChar ' ' -> handleAction state
+          _           -> state  -- Se qualquer outra tecla for pressionada, não muda o estado
+  if key == KeyChar 'q'
+    then endWin >> exitSuccess
+    else eventLoop newState
+  

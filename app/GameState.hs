@@ -7,7 +7,7 @@ import Control.Lens
 data Player = P1 | P2 deriving (Show, Eq)
 
 data Cell = Cell
-  { _isSelected     :: Bool            -- Indica se o cursor está na célula
+  { _isSelected     :: Bool            -- Indica se o cursor está na célula 
   , _available      :: Bool            -- Indica se é possível mover para esta célula
   , _player         :: Maybe Player    -- Indica o jogador da peça
   , _isKing         :: Bool            -- Indica de quem é a vez.
@@ -16,7 +16,7 @@ data Cell = Cell
 makeLenses ''Cell
 
 data GameState = GameState
-  { _cursor    :: (Int, Int)        -- Posição do cursor na matriz.
+  { _cursor    :: (Int, Int)        -- Posição do cursor na matriz. (linha, coluna)
   , _selected  :: Maybe (Int, Int)  -- Tupla com posição e booleano.
   , _matrix    :: [[Cell]]           -- Representação do tabuleiro.
   , _p1Count   :: Int               -- Número de peças do jogador P1.
@@ -39,12 +39,13 @@ makeInitialState = GameState
 makeInitialMatrix :: [[Cell]]
 makeInitialMatrix = 
   [[
-    makeCell i j | j <- [0 .. 8]
-  ] | i <- [0 .. 8]]
+    makeCell i j | j <- [0 .. 7]
+  ] | i <- [0 .. 7]]
 
 makeCell :: Int -> Int -> Cell
 makeCell i j
     | i >= 5 && (i + j) `mod` 2 == 0   = defaultCell { _player = Just P1 }
+    | i == 7 && j == 0   = defaultCell {_isSelected = True}
     | i <= 2 && (i + j) `mod` 2 == 0   = defaultCell { _player = Just P2 }
     | otherwise                  = defaultCell
 
