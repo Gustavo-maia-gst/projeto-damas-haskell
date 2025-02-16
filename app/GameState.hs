@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module GameState (GameState(..), Cell(..), Player(..), isSelected, available, player, isKing, cursor, selected, matrix, p1Count, p2Count, turn) where
+module GameState (makeInitialState, GameState(..), Cell(..), Player(..), isSelected, available, player, isKing, cursor, selected, matrix, p1Count, p2Count, turn) where
 import Control.Lens
 
 
@@ -25,3 +25,33 @@ data GameState = GameState
   } deriving (Show, Eq)
 
 makeLenses ''GameState
+
+makeInitialState :: GameState
+makeInitialState = GameState
+  { _cursor   = (7, 0)          
+  , _selected = Nothing         
+  , _matrix   = makeInitialMatrix   
+  , _p1Count  = 12              
+  , _p2Count  = 12              
+  , _turn     = P1              
+  }
+
+makeInitialMatrix :: [[Cell]]
+makeInitialMatrix = 
+  [[
+    makeCell i j | j <- [0 .. 8]
+  ] | i <- [0 .. 8]]
+
+makeCell :: Int -> Int -> Cell
+makeCell i j
+    | i >= 5 && (i + j) `mod` 2 == 0   = defaultCell { _player = Just P1 }
+    | i <= 2 && (i + j) `mod` 2 == 0   = defaultCell { _player = Just P2 }
+    | otherwise                  = defaultCell
+
+defaultCell :: Cell
+defaultCell = Cell 
+  { _isSelected = False
+  , _available  = False
+  , _player     = Nothing
+  , _isKing     = False
+  }

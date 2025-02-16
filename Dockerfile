@@ -1,7 +1,7 @@
 FROM haskell:latest
 
 RUN apt-get update &&\
-    apt-get install -y libncurses-dev
+    apt-get install -y libncurses-dev libncursesw5-dev
 
 RUN cabal update
 
