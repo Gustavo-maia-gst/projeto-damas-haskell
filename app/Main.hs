@@ -2,31 +2,34 @@
 
 import UI.HSCurses.Curses
 import UI.HSCurses.CursesHelper
+import GameState
+import CursesWrapper (initWrapper)
+import Render as R
 import Control.Monad (when)
+import Control.Lens
 import System.Exit (exitSuccess)
+import Navigation
+import HandleAction
 
 main :: IO ()
 main = do
-  initCurses
-  cBreak True          -- Habilita o modo cbreak (desativa buffering de linha)
-  echo False           -- Desabilita o echo (equivalente a noecho())
-  keypad stdScr True   -- Ativa leitura de teclas especiais na tela padrão
-  cursSet CursorInvisible  -- Oculta o cursor
-  loop (10, 10)        -- Posição inicial (linha 10, coluna 10)
-  endWin
+  initWrapper
+  let state = makeInitialState
+  eventLoop state
 
-loop :: (Int, Int) -> IO ()
-loop (y, x) = do
-  wclear stdScr  -- Limpa a tela padrão
-  mvAddCh y x (fromIntegral (fromEnum '@'))
-  refresh
-  key <- getCh  -- Lê a tecla pressionada (do tipo Key)
-  let (ny, nx) = case key of
-                   KeyChar 'w' -> (max 0 (y - 1), x)
-                   KeyChar 's' -> (y + 1, x)
-                   KeyChar 'a' -> (y, max 0 (x - 1))
-                   KeyChar 'd' -> (y, x + 1)
-                   _           -> (y, x)
+eventLoop :: GameState -> IO ()
+eventLoop state = do
+  R.refresh state
+  key <- getCh 
+
+  let newState = case key of
+          KeyChar 'w' -> handleUp state
+          KeyChar 's' -> handleDown state
+          KeyChar 'a' -> handleLeft state
+          KeyChar 'd' -> handleRight state
+          KeyChar ' ' -> handleAction state
+          _           -> state  -- Se qualquer outra tecla for pressionada, não muda o estado
   if key == KeyChar 'q'
     then endWin >> exitSuccess
-    else loop (ny, nx)
+    else eventLoop newState
+  
