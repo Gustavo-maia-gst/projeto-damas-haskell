@@ -33,6 +33,23 @@ player2 = Cell {
     , _isKing = False
 }
 
+player1K :: Cell
+player1K = Cell {
+    _isSelected = False
+    , _available = False
+    , _player = Just P1
+    , _isKing = True
+}
+
+player2K :: Cell
+player2K = Cell {
+    _isSelected = False
+    , _available = False
+    , _player = Just P2
+    , _isKing = True
+}
+
+
 
 -- A single P1 piece at (0, 1) Both diagonals are empty
 createTestState1 :: GameState
@@ -356,3 +373,110 @@ testIsEnemy1 = TestCase $
 testIsEnemy2 :: Test
 testIsEnemy2 = TestCase $
     assertEqual "player2 is enemy of P1" False (isEnemy player2 P2)
+
+----- King movements
+
+-- King can move 1 cell in all diagonals
+createTestState10 :: GameState
+createTestState10 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, player1K, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    , _turn = P1
+    , _selected = Just (3, 3)  
+    }
+
+testFindValidMoves10 :: Test
+testFindValidMoves10 = TestCase $ do
+    let initialState = createTestState10
+    let newState = findValidMoves initialState  
+
+    let cell1 = (newState ^. matrix) !! 3 !! 3
+    let cell2 = (newState ^. matrix) !! 2 !! 2
+    let cell3 = (newState ^. matrix) !! 2 !! 4
+    let cell4 = (newState ^. matrix) !! 4 !! 4
+    let cell5 = (newState ^. matrix) !! 4 !! 2
+
+
+
+    assertEqual "Cell at (3, 3) should be unavailable, it's the own king piece" False (cell1 ^. available)
+    assertEqual "Cell at (2, 2) should be available, it is empty" True (cell2 ^. available)
+    assertEqual "Cell at (2, 4) should be available, it is empty" True (cell3 ^. available)
+    assertEqual "Cell at (4, 4) should be available, it is empty" True (cell4 ^. available)
+    assertEqual "Cell at (4, 4) should be available, it is empty" True (cell5 ^. available)
+
+-- King can move 1 cell in all diagonals
+createTestState11 :: GameState
+createTestState11 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, player1, noPiece, player1, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, player1K, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, player1, noPiece, player1, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    , _turn = P1
+    , _selected = Just (3, 3)  
+    }
+
+testFindValidMoves11 :: Test
+testFindValidMoves11 = TestCase $ do
+    let initialState = createTestState11
+    let newState = findValidMoves initialState  
+
+    let cell1 = (newState ^. matrix) !! 3 !! 3
+    let cell2 = (newState ^. matrix) !! 2 !! 2
+    let cell3 = (newState ^. matrix) !! 2 !! 4
+    let cell4 = (newState ^. matrix) !! 4 !! 4
+    let cell5 = (newState ^. matrix) !! 4 !! 2
+
+
+
+    assertEqual "Cell at (3, 3) should be unavailable, it's the own king piece" False (cell1 ^. available)
+    assertEqual "Cell at (2, 2) should be unavailable, it has ally piece" False (cell2 ^. available)
+    assertEqual "Cell at (2, 4) should be unavailable, it has ally piece" False (cell3 ^. available)
+    assertEqual "Cell at (4, 4) should be unavailable, it has ally piece" False (cell4 ^. available)
+    assertEqual "Cell at (4, 4) should be unavailable, it has ally piece" False (cell5 ^. available)
+
+-- King can capture in all directions
+createTestState12 :: GameState
+createTestState12 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, player2, noPiece, player2, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, player1K, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, player2, noPiece, player2, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    , _turn = P1
+    , _selected = Just (3, 3)  
+    }
+
+testFindValidMoves12 :: Test
+testFindValidMoves12 = TestCase $ do
+    let initialState = createTestState12
+    let newState = findValidMoves initialState  
+
+    let cell1 = (newState ^. matrix) !! 3 !! 3
+    let cell2 = (newState ^. matrix) !! 1 !! 5
+    let cell3 = (newState ^. matrix) !! 1 !! 1
+    let cell4 = (newState ^. matrix) !! 5 !! 5
+    let cell5 = (newState ^. matrix) !! 5 !! 1
+
+
+
+    assertEqual "Cell at (3, 3) should be unavailable, it's the own king piece" False (cell1 ^. available)
+    assertEqual "Cell at (1, 5) should be available, it has a capture" True (cell2 ^. available)
+    assertEqual "Cell at (1, 1) should be available, it has a capture" True (cell3 ^. available)
+    assertEqual "Cell at (5, 5) should be available, it has a capture" True (cell4 ^. available)
+    assertEqual "Cell at (5, 1) should be available, it has a capture" True (cell5 ^. available)

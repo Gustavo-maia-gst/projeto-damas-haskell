@@ -13,4 +13,5 @@ main = do
      testIsEnemy1, testIsEnemy2,
       testFindValidMoves1, testFindValidMoves2, testFindValidMoves3,
       testFindValidMoves4, testFindValidMoves5, testFindValidMoves6,
-       testFindValidMoves7, testFindValidMoves8, testFindValidMoves9])  
+       testFindValidMoves7, testFindValidMoves8, testFindValidMoves9,
+       testFindValidMoves10, testFindValidMoves11, testFindValidMoves12])  
