@@ -1,7 +1,6 @@
 module Main where
 
 import Test.HUnit
-import TestSimple  
 import TestMovementFinder
 import Utils
 
@@ -14,4 +13,5 @@ main = do
       testFindValidMoves1, testFindValidMoves2, testFindValidMoves3,
       testFindValidMoves4, testFindValidMoves5, testFindValidMoves6,
        testFindValidMoves7, testFindValidMoves8, testFindValidMoves9,
-       testFindValidMoves10, testFindValidMoves11, testFindValidMoves12])  
+       testFindValidMoves10, testFindValidMoves11, testFindValidMoves12,
+       testFindValidMoves13, testFindValidMoves14])  

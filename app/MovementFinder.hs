@@ -4,12 +4,7 @@ import GameState
 import Control.Lens
 import Utils
 
--- TODO: King movements are not implemented yet.
--- TODO: Check for multiple captures
-
--- For now, it only contains the logic to handle basic moves like going to an empty cell
--- making a single diagonal capture, and checking if it's allowed to move to a cell based
--- on the bounds and availability.
+-- Currently i'm represe
 
 findValidMoves :: GameState -> GameState
 findValidMoves state = case state ^. selected of
@@ -24,7 +19,7 @@ findValidMoves state = case state ^. selected of
                 else
                     let king = cell ^. isKing
                         direction = getMoveDirections player king
-                    in foldl (\acc (dx, dy) -> checkDirection acc (dx, dy) (x, y)) state direction
+                    in foldl (\acc (dx, dy) -> checkDirection acc (dx, dy) (x, y) 0 direction) state direction
 
 -- Movement directions based on the player type
 getMoveDirections :: Player -> Bool -> [(Int, Int)]
@@ -33,21 +28,28 @@ getMoveDirections P1 _ = [(1, -1), (1, 1)]  -- Up-left and up-right for P1
 getMoveDirections P2 _ = [(-1, -1), (-1, 1)] -- Down-left and down-right for P2
 getMoveDirections _ _        = []  -- No valid moves if no player
 
-checkDirection :: GameState -> (Int, Int) -> (Int, Int) -> GameState
-checkDirection state (x, y) (dx, dy) 
+checkDirection :: GameState -> (Int, Int) -> (Int, Int) -> (Int) -> [(Int, Int)] -> GameState
+checkDirection state (dx, dy) (x, y) numberOfJumps direction
     | not (isInBounds newX newY) = state -- Out of bounds, return unchaged
-    | isEmpty targetCell = state & matrix . ix newX . ix newY . available .~ True  -- If empty, mark as valid move
-    | isEnemy targetCell player = checkJump state (newX + x, newY + y) -- Enemy piece in the diagonal, check if the next diagonal is free
+    | isEmpty targetCell && numberOfJumps == 0 = state & matrix . ix newX . ix newY . available .~ True  -- If empty, mark as valid move
+    | isEnemy targetCell player && isInBounds jumpX jumpY && isEmpty jumpTargetCell =
+        let 
+            newState = state & matrix . ix jumpX . ix jumpY . available .~ True -- checkJump state (newX + dx, newY + dy) (dx, dy) -- Enemy piece in the diagonal, check if the next diagonal is free
+        in 
+            foldl (\acc (dx, dy) -> checkDirection acc (dx, dy) (jumpX, jumpY) (numberOfJumps + 1) direction) newState direction
     | otherwise = state -- Ally piece, invalid move
     where
         (newX, newY) = (x + dx, y + dy) -- New coordinates
+        (jumpX, jumpY) = (x + 2 * dx, y + 2 * dy)
         targetCell = getCell newX newY state
+        jumpTargetCell = getCell jumpX jumpY state
         player = state ^. turn
         
 
-checkJump :: GameState -> (Int, Int) -> GameState
-checkJump state (jumpX, jumpY)
-    | not (isInBounds jumpX jumpY) = state  -- If out of bounds, return the original state
-    | isEmpty (getCell jumpX jumpY state) = state & matrix . ix jumpX . ix jumpY . available .~ True  -- If cell is empty, mark as valid move
-    | otherwise = state  -- If none of the above, return the original state
-    
+-- checkJump :: GameState -> (Int, Int) -> (Int, Int) -> GameState
+-- checkJump state (jumpX, jumpY) (dx, dy)
+--     | not (isInBounds jumpX jumpY) = state  -- If out of bounds, return the original state
+--     | isEmpty (getCell jumpX jumpY state) = state & matrix . ix jumpX . ix jumpY . available .~ True  -- If cell is empty, mark as valid move
+--     | otherwise = state  -- If none of the above, return the original state
+
+
