@@ -16,16 +16,6 @@ getCell line col state =
   in
     (m !! line) !! col
 
-checkBit :: Int -> Int -> Bool
-checkBit bit number  = (number .&. (1 `shiftL` bit)) /= 0
-
-
-
-
-
-
-
-
 
 
 
