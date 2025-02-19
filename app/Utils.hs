@@ -19,6 +19,17 @@ getCell line col state =
 checkBit :: Int -> Int -> Bool
 checkBit bit number  = (number .&. (1 `shiftL` bit)) /= 0
 
+
+
+
+
+
+
+
+
+
+
+
 isInBounds :: Int -> Int -> Bool
 isInBounds x y = (x >= 0 && x < 8) && (y >= 0 && y < 8)
 

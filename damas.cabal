@@ -17,6 +17,17 @@ executable damas
     other-modules:    GameState, HandleSelection, Utils, MovementFinder
     extra-libraries:  ncursesw
 
+
+
+
+
+
+
+
+
+
+
+
 test-suite damas-test
     type:                 exitcode-stdio-1.0
     main-is:              TestRunner.hs  
