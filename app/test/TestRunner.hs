@@ -15,3 +15,5 @@ main = do
        testFindValidMoves7, testFindValidMoves8, testFindValidMoves9,
        testFindValidMoves10, testFindValidMoves11, testFindValidMoves12,
        testFindValidMoves13, testFindValidMoves14])  
+
+-- 'cabal test' to execute

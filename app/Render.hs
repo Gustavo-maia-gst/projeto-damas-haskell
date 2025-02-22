@@ -92,8 +92,9 @@ getCellChar cell = (char, color)
              else if cell ^. player == Just P2 then 'B'
              else ' '
 
-      color = if cell ^. isSelected then highlightColor
-              else if cell ^. available then availableColor
+      color = if cell ^. isUnderCursor then highlightColor
+              else if cell ^. isSelected then selectedColor
+              else if cell ^. isAvailable then availableColor
               else baseColor
 
 cellHeigth :: Int

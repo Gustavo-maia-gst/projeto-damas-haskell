@@ -9,15 +9,16 @@ hasSelection state = case state ^. selected of
   Just _  -> True
   Nothing  -> False
 
-getCell :: Int -> Int -> GameState -> Cell
-getCell line col state = 
-  let 
-    m = state ^. matrix 
-  in
-    (m !! line) !! col
+clearSelection :: GameState -> GameState
+clearSelection state = state & selected .~ Nothing
 
-
-
+getCell line col state = cell
+  where
+    cellSelected    = state ^. selected == Just (line, col)
+    cellUnderCursor = state ^. cursor == (line, col)
+    mat             = state ^. matrix
+    baseCell        = (mat !! line) !! col
+    cell            = (baseCell & isSelected .~ cellSelected) & isUnderCursor .~ cellUnderCursor
 
 
 isInBounds :: Int -> Int -> Bool
@@ -30,3 +31,5 @@ isEnemy :: Cell -> Player -> Bool
 isEnemy cell currentPlayer = case cell ^. player of
     Just p  -> p /= currentPlayer  
     Nothing -> False     
+
+

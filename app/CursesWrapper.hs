@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module CursesWrapper (initWrapper, refreshScreen, baseColor, highlightColor, availableColor, CellColor) where
+module CursesWrapper (initWrapper, refreshScreen, baseColor, highlightColor, availableColor, selectedColor, CellColor) where
 
 import GHC.IO.Encoding (setLocaleEncoding, utf8)
 import UI.HSCurses.Curses
@@ -20,6 +20,9 @@ highlightColor = Pair 2
 availableColor :: Pair 
 availableColor = Pair 3
 
+selectedColor :: Pair 
+selectedColor = Pair 4
+
 initWrapper :: IO ()
 initWrapper = do
   -- HSCurses flags
@@ -35,6 +38,7 @@ initWrapper = do
   initPair baseColor white black
   initPair highlightColor white yellow
   initPair availableColor white cyan
+  initPair selectedColor white cyan
 
 refreshScreen :: Int -> Int -> [[(Char, CellColor)]] -> IO ()
 refreshScreen startLine startCol matrix = do
