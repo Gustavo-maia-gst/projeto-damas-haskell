@@ -23,12 +23,14 @@ eventLoop state = do
   key <- getCh 
 
   let newState = case key of
-          KeyChar 'w' -> handleUp state
-          KeyChar 's' -> handleDown state
-          KeyChar 'a' -> handleLeft state
-          KeyChar 'd' -> handleRight state
-          KeyChar ' ' -> handleAction state
-          _           -> state  -- Se qualquer outra tecla for pressionada, não muda o estado
+          KeyChar 'w'   ->  handleUp state
+          KeyChar 's'   ->  handleDown state
+          KeyChar 'a'   ->  handleLeft state
+          KeyChar 'd'   ->  handleRight state
+          KeyChar ' '   ->  handleAction state
+          KeyChar '\n'  ->  handleAction state
+          _             ->  state  -- Se qualquer outra tecla for pressionada, não muda o estado
+
   if key == KeyChar 'q'
     then endWin >> exitSuccess
     else eventLoop newState

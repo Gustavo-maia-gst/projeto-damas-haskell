@@ -16,14 +16,12 @@ checkSelection state =
         playerInTurn = state ^. turn
 
 handleSelection :: GameState -> GameState
-handleSelection state 
+handleSelection state
     | not (checkSelection state) = state
     | otherwise = newState
         where
         cursorY = state ^. cursor . _1
         cursorX = state ^. cursor . _2
 
-        stateAux = state & selected .~ Just (cursorY, cursorX)
-        -- acho que deve deixar ele selecionado e o cursor tem preferencia pelo selecionado
-        newState = stateAux & matrix . ix cursorY . ix cursorX . isSelected .~ False
+        newState = state & selected .~ Just (cursorY, cursorX)
         -- newState = movimentByFinder state2

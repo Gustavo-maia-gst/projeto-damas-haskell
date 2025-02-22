@@ -17,10 +17,10 @@ handleUp state
         cursorY = state ^. cursor . _1
         cursorX = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isSelected .~ False) & cursor . _1 -~ 1
+        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _1 -~ 1
         newCursorY = state2 ^. cursor . _1
         newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isSelected .~ True
+        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
 
 handleDown :: GameState -> GameState
 handleDown state 
@@ -30,10 +30,10 @@ handleDown state
         cursorY = state ^. cursor . _1
         cursorX = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isSelected .~ False) & cursor . _1 +~ 1
+        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _1 +~ 1
         newCursorY = state2 ^. cursor . _1
         newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isSelected .~ True
+        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
 
 handleRight :: GameState -> GameState
 handleRight state 
@@ -43,10 +43,10 @@ handleRight state
         cursorY = state ^. cursor . _1
         cursorX = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isSelected .~ False) & cursor . _2 +~ 1
+        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _2 +~ 1
         newCursorY = state2 ^. cursor . _1
         newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isSelected .~ True
+        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
 
 handleLeft :: GameState -> GameState
 handleLeft state 
@@ -56,9 +56,9 @@ handleLeft state
         cursorY = state ^. cursor . _1
         cursorX = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isSelected .~ False) & cursor . _2 -~ 1
+        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _2 -~ 1
         newCursorY = state2 ^. cursor . _1
         newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isSelected .~ True
+        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
 
     
