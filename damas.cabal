@@ -10,8 +10,21 @@ executable damas
     main-is:          Main.hs
     build-depends:    base,
                       hscurses,
-                      lens
+                      lens,
+                      HUnit
     hs-source-dirs:   app, app/Render
     default-language: Haskell2010
-    other-modules:    GameState, HandleSelection, Utils, CursesWrapper, Render, Navigation, HandleAction
+    other-modules:    GameState, HandleSelection, Utils, MovementFinder, CursesWrapper, Render, Navigation, HandleAction
     extra-libraries: panelw ncursesw
+
+
+test-suite damas-test
+    type:                 exitcode-stdio-1.0
+    main-is:              TestRunner.hs  
+    build-depends:        base >=4.7 && <5,
+                          HUnit,
+                          lens
+    hs-source-dirs:       app app/test
+    other-modules:        TestMovementFinder 
+    default-language:     Haskell2010
+                
