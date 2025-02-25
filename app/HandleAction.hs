@@ -4,10 +4,7 @@ import GameState
 import Control.Lens
 import Utils (hasSelection, clearSelection)
 import HandleSelection (handleSelection)
-
--- TODO remove after implementing handleMovement
-handleMovement :: GameState -> GameState
-handleMovement state = state
+import HandleMovement
 
 handleAction :: GameState -> GameState
 handleAction state 

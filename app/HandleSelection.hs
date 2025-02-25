@@ -3,7 +3,7 @@ module HandleSelection where
 import GameState
 import Control.Lens
 import Utils
--- import MovimentByFinder
+import MovementFinder
 
 checkSelection :: GameState -> Bool
 checkSelection state = 
@@ -23,5 +23,5 @@ handleSelection state
         cursorY = state ^. cursor . _1
         cursorX = state ^. cursor . _2
 
-        newState = state & selected .~ Just (cursorY, cursorX)
-        -- newState = movimentByFinder state2
+        stateAux = state & selected .~ Just (cursorY, cursorX)
+        newState = findValidMoves stateAux
