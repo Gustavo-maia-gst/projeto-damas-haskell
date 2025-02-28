@@ -12,9 +12,9 @@ executable damas
                       hscurses,
                       lens,
                       HUnit
-    hs-source-dirs:   app, app/Render
+    hs-source-dirs:   app src src/Handles src/States src/Ui
     default-language: Haskell2010
-    other-modules:    GameState, HandleSelection, Utils, MovementFinder, CursesWrapper, Render, Navigation, HandleAction, HandleMovement, EventLoop
+    other-modules:    GameState, HandleSelection, Utils, MovementFinder, CursesWrapper, Render, Navigation, HandleAction, HandleMovement, EventLoop, InitialScreen
     extra-libraries: panelw ncursesw
 
 
