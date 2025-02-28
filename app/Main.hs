@@ -1,37 +1,68 @@
-{-# LANGUAGE OverloadedStrings #-}
-
+import CursesWrapper
 import UI.HSCurses.Curses
 import UI.HSCurses.CursesHelper
-import GameState
-import CursesWrapper (initWrapper)
-import Render as R
 import Control.Monad (when)
-import Control.Lens
-import System.Exit (exitSuccess)
-import Navigation
-import HandleAction
+import EventLoop as E
 
-main :: IO ()
+printCentered :: String -> Int -> IO ()
+printCentered text y = do
+    (height, width) <- scrSize 
+    let x = (width - length text) `div` 2 
+    mvWAddStr stdScr y x text 
+
+printTexts :: [String] -> Int -> Int -> IO ()
+printTexts [] _ _ = return ()
+printTexts (t:ts) indAt indCursor = do
+    if indAt == indCursor 
+        then printCentered ("-> " ++ t) (5 + 2 * indAt)
+        else printCentered t (5 + 2 * indAt)
+    printTexts ts (indAt + 1) indCursor
+
+textHowToPlay :: String
+textHowToPlay = "Para se mover utilize as teclas W, A, S, D\nPara selecionar use a tecla ESPAÇO\nAo selecionar uma peça aparecerá os possiveis movimentos para ela, caso seja de múltiplos movimentos terá que fazer movimento por movimento"
+
+howPlay :: IO()
+howPlay = do
+    wclear stdScr
+    
+    (height, width) <- scrSize 
+    mvWAddStr stdScr 3 0 textHowToPlay
+    
+    let text = "-> Voltar"
+
+    let x = (width - length text ) `div` 2  
+    mvWAddStr stdScr (height-1) x text
+
+    refresh
+
+    key <- getCh  
+    when (key /= KeyChar ' ') howPlay 
+
+options :: Int -> IO Int
+options x = do
+    wclear stdScr
+    printCentered "Para selecionar aperte ESPAÇO" 0
+    printTexts ["Contra outro jogador", "Contra bot", "Como jogar"] 0 x
+    refresh
+    key <- getCh  
+
+    case key of
+        KeyChar 'w' -> options (max 0 (x - 1))  
+        KeyChar 's' -> options (min 2 (x + 1))  
+        KeyChar ' ' -> if x == 2
+                       then do
+                           howPlay
+                           options 2
+                       else return x
+        _ -> options x
+    
+
+
+main :: IO()
 main = do
-  initWrapper
-  let state = makeInitialState
-  eventLoop state
+    initWrapper
 
-eventLoop :: GameState -> IO ()
-eventLoop state = do
-  R.refresh state
-  key <- getCh 
+    choice <- options 0
 
-  let newState = case key of
-          KeyChar 'w'   ->  handleUp state
-          KeyChar 's'   ->  handleDown state
-          KeyChar 'a'   ->  handleLeft state
-          KeyChar 'd'   ->  handleRight state
-          KeyChar ' '   ->  handleAction state
-          KeyChar '\n'  ->  handleAction state
-          _             ->  state  -- Se qualquer outra tecla for pressionada, não muda o estado
+    E.init choice
 
-  if key == KeyChar 'q'
-    then endWin >> exitSuccess
-    else eventLoop newState
-  

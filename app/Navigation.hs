@@ -11,54 +11,54 @@ isValid x y
 
 handleUp :: GameState -> GameState
 handleUp state 
-    | not (isValid  (cursorY-1) cursorX) = state
+    | not (isValid  (cursorLine-1) cursorCol) = state
     | otherwise = newState
     where
-        cursorY = state ^. cursor . _1
-        cursorX = state ^. cursor . _2
+        cursorLine = state ^. cursor . _1
+        cursorCol = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _1 -~ 1
-        newCursorY = state2 ^. cursor . _1
-        newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
+        state2 = (state & matrix . ix cursorLine . ix cursorCol . isUnderCursor .~ False) & cursor . _1 -~ 1
+        newCursorLine = state2 ^. cursor . _1
+        newCursorCol = state2 ^. cursor . _2
+        newState = state2 & matrix . ix newCursorLine . ix newCursorCol . isUnderCursor .~ True
 
 handleDown :: GameState -> GameState
 handleDown state 
-    | not (isValid (cursorY+1) cursorX) = state
+    | not (isValid (cursorLine+1) cursorCol) = state
     | otherwise = newState
     where
-        cursorY = state ^. cursor . _1
-        cursorX = state ^. cursor . _2
+        cursorLine = state ^. cursor . _1
+        cursorCol = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _1 +~ 1
-        newCursorY = state2 ^. cursor . _1
-        newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
+        state2 = (state & matrix . ix cursorLine . ix cursorCol . isUnderCursor .~ False) & cursor . _1 +~ 1
+        newCursorLine = state2 ^. cursor . _1
+        newCursorCol = state2 ^. cursor . _2
+        newState = state2 & matrix . ix newCursorLine . ix newCursorCol . isUnderCursor .~ True
 
 handleRight :: GameState -> GameState
 handleRight state 
-    | not (isValid cursorY (cursorX + 1)) = state
+    | not (isValid cursorLine (cursorCol + 1)) = state
     | otherwise = newState
     where
-        cursorY = state ^. cursor . _1
-        cursorX = state ^. cursor . _2
+        cursorLine = state ^. cursor . _1
+        cursorCol = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _2 +~ 1
-        newCursorY = state2 ^. cursor . _1
-        newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
+        state2 = (state & matrix . ix cursorLine . ix cursorCol . isUnderCursor .~ False) & cursor . _2 +~ 1
+        newCursorLine = state2 ^. cursor . _1
+        newCursorCol = state2 ^. cursor . _2
+        newState = state2 & matrix . ix newCursorLine . ix newCursorCol . isUnderCursor .~ True
 
 handleLeft :: GameState -> GameState
 handleLeft state 
-    | not (isValid cursorY (cursorX - 1)) = state
+    | not (isValid cursorLine (cursorCol - 1)) = state
     | otherwise = newState
     where
-        cursorY = state ^. cursor . _1
-        cursorX = state ^. cursor . _2
+        cursorLine = state ^. cursor . _1
+        cursorCol = state ^. cursor . _2
 
-        state2 = (state & matrix . ix cursorY . ix cursorX . isUnderCursor .~ False) & cursor . _2 -~ 1
-        newCursorY = state2 ^. cursor . _1
-        newCursorX = state2 ^. cursor . _2
-        newState = state2 & matrix . ix newCursorY . ix newCursorX . isUnderCursor .~ True
+        state2 = (state & matrix . ix cursorLine . ix cursorCol . isUnderCursor .~ False) & cursor . _2 -~ 1
+        newCursorLine = state2 ^. cursor . _1
+        newCursorCol = state2 ^. cursor . _2
+        newState = state2 & matrix . ix newCursorLine . ix newCursorCol . isUnderCursor .~ True
 
     
