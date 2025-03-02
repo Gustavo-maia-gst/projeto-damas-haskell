@@ -10,7 +10,9 @@ hasSelection state = case state ^. selected of
   Nothing  -> False
 
 clearSelection :: GameState -> GameState
-clearSelection state = state & selected .~ Nothing
+clearSelection state = stateAux & selected .~ Nothing
+  where 
+    stateAux = setAllCellsUnavailable state
 
 getCell line col state = cell
   where
@@ -33,3 +35,20 @@ isEnemy cell currentPlayer = case cell ^. player of
     Nothing -> False     
 
 
+changeTurn :: GameState -> GameState
+changeTurn state = newState
+  where
+    vez = state ^. turn
+    --
+    newState = if vez == P1 
+               then state & turn .~ P2
+               else state & turn .~ P1
+
+setAllCellsUnavailable :: GameState -> GameState
+setAllCellsUnavailable state =
+  state & matrix . each . each . isAvailable .~ False
+
+reduceOpponentCount gameState =
+  case gameState ^. turn of
+    P1 -> gameState & p2Count %~ subtract 1  
+    P2 -> gameState & p1Count %~ subtract 1

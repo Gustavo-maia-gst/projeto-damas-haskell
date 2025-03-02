@@ -45,16 +45,16 @@ makeInitialMatrix =
 
 makeCell :: Int -> Int -> Cell
 makeCell i j
-    | i >= 5 && (i + j) `mod` 2 == 0   = defaultCell { _player = Just P1 }
-    | i == 7 && j == 0   = defaultCell {_isUnderCursor = True}
-    | i <= 2 && (i + j) `mod` 2 == 0   = defaultCell { _player = Just P2 }
-    | otherwise                  = defaultCell
+    | i >= 5 && (i + j) `mod` 2 == 0    = defaultCell { _player = Just P1 }
+    | i == 7 && j == 0                  = defaultCell {_isUnderCursor = True}
+    | i <= 2 && (i + j) `mod` 2 == 0    = defaultCell { _player = Just P2 }
+    | otherwise                         = defaultCell
 
 defaultCell :: Cell
 defaultCell = Cell 
-  { _isUnderCursor= False
-  , _isSelected   = False
-  , _isAvailable  = False
-  , _player     = Nothing
-  , _isKing     = False
+  { _isUnderCursor  = False
+  , _isSelected     = False
+  , _isAvailable    = False
+  , _player         = Nothing
+  , _isKing         = False
   }
