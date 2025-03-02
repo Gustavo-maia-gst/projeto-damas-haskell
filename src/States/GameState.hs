@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module GameState (makeInitialState, GameState(..), Cell(..), Player(..), isUnderCursor, isSelected, isAvailable, player, isKing, cursor, selected, matrix, p1Count, p2Count, turn, isLocked) where
+module GameState (makeInitialState, defaultCell,GameState(..), Cell(..), Player(..), isUnderCursor, isSelected, isAvailable, player, isKing, cursor, selected, matrix, p1Count, p2Count, turn) where
 import Control.Lens
 
 
