@@ -4,8 +4,12 @@ import GameState
 import Control.Lens
 import Utils
 
-findValidMoves :: GameState -> GameState
-findValidMoves state = case state ^. selected of
+-- Scans the board based on the selected piece's position and marks all possible moves 
+-- by setting the target cells as `isAvailable`. 
+-- If `isMultiJump` is True, only capture moves are marked.
+
+findValidMoves :: GameState -> Bool -> GameState
+findValidMoves state isMultiJump = case state ^. selected of
     Nothing -> state
     Just (x, y) -> 
         let cell = getCell x y state
@@ -17,7 +21,7 @@ findValidMoves state = case state ^. selected of
                 else
                     let king = cell ^. isKing
                         direction = getMoveDirections player king
-                    in foldl (\acc (dx, dy) -> checkDirection acc (dx, dy) (x, y) 0 direction) state direction
+                    in foldl (\acc (dx, dy) -> checkDirection acc (dx, dy) (x, y) isMultiJump direction) state direction
 
 
 
@@ -27,15 +31,12 @@ getMoveDirections P2 _ = [(1, -1), (1, 1)]  -- Up-left and up-right for P1
 getMoveDirections P1 _ = [(-1, -1), (-1, 1)] -- Down-left and down-right for P2
 getMoveDirections _ _        = []  -- No valid moves if no player
 
-checkDirection :: GameState -> (Int, Int) -> (Int, Int) -> (Int) -> [(Int, Int)] -> GameState
-checkDirection state (dx, dy) (x, y) numberOfJumps direction
+checkDirection :: GameState -> (Int, Int) -> (Int, Int) -> Bool -> [(Int, Int)] -> GameState
+checkDirection state (dx, dy) (x, y) isMultiJump direction
     | not (isInBounds newX newY) = state -- Out of bounds, return unchaged
-    | isEmpty targetCell && numberOfJumps == 0 = state & matrix . ix newX . ix newY . isAvailable .~ True  -- If empty, mark as valid move
+    | isEmpty targetCell && isMultiJump == False = state & matrix . ix newX . ix newY . isAvailable .~ True  -- If empty, mark as valid move
     | isEnemy targetCell player && isInBounds jumpX jumpY && isEmpty jumpTargetCell = -- if the diagonal has an enemy piece, check if the next cell is empty
-        let 
-            newState = state & matrix . ix jumpX . ix jumpY . isAvailable .~ True -- Mark it as available
-        in 
-            foldl (\acc (dx, dy) -> checkDirection acc (dx, dy) (jumpX, jumpY) (numberOfJumps + 1) direction) newState direction -- Recursively mark all the valid moves
+            state & matrix . ix jumpX . ix jumpY . isAvailable .~ True -- Mark it as available
     | otherwise = state -- Ally piece, invalid move
     where
         (newX, newY) = (x + dx, y + dy) 

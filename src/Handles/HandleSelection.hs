@@ -24,4 +24,4 @@ handleSelection state
         cursorX = state ^. cursor . _2
 
         stateAux = state & selected .~ Just (cursorY, cursorX)
-        newState = findValidMoves stateAux
+        newState = findValidMoves stateAux False

@@ -49,6 +49,14 @@ player2K = Cell {
     , _isKing = True
 }
 
+availableCell :: Cell
+availableCell = Cell{ 
+    _isSelected = False
+    , _isAvailable = True
+    , _player = Nothing
+    , _isKing = False
+    }
+
 
 
 -- A single P1 piece at (0, 1) Both diagonals are empty
@@ -70,7 +78,7 @@ createTestState1 = GameState
 testFindValidMoves1 :: Test
 testFindValidMoves1 = TestCase $ do
     let initialState = createTestState1  
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 1 !! 0
     let cell2 = (newState ^. matrix) !! 1 !! 2
@@ -100,7 +108,7 @@ createTestState2 = GameState
 testFindValidMoves2 :: Test
 testFindValidMoves2 = TestCase $ do
     let initialState = createTestState2 
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 1 !! 0
     let cell2 = (newState ^. matrix) !! 1 !! 2
@@ -130,7 +138,7 @@ createTestState3 = GameState
 testFindValidMoves3 :: Test
 testFindValidMoves3 = TestCase $ do
     let initialState = createTestState3
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
 
     let cell1 = (newState ^. matrix) !! 1 !! 0
@@ -163,7 +171,7 @@ createTestState4 = GameState
 testFindValidMoves4 :: Test
 testFindValidMoves4 = TestCase $ do
     let initialState = createTestState4  -- your initial game state with P1 at (0, 1)
-    let newState = findValidMoves initialState  -- assuming findValidMoves updates the state
+    let newState = findValidMoves initialState False  -- assuming findValidMoves updates the state
 
     -- Ensure we're not getting out-of-bounds errors, with !! we need to be sure the indices are correct.
     let cell1 = (newState ^. matrix) !! 1 !! 0
@@ -198,7 +206,7 @@ createTestState5 = GameState
 testFindValidMoves5 :: Test
 testFindValidMoves5 = TestCase $ do
     let initialState = createTestState5  
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
 
     let cell1 = (newState ^. matrix) !! 2 !! 2
@@ -231,7 +239,7 @@ createTestState6 = GameState
 testFindValidMoves6 :: Test
 testFindValidMoves6 = TestCase $ do
     let initialState = createTestState6
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 0 !! 2
     let cell2 = (newState ^. matrix) !! 0 !! 1
@@ -263,7 +271,7 @@ createTestState7 = GameState
 testFindValidMoves7 :: Test
 testFindValidMoves7 = TestCase $ do
     let initialState = createTestState7
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 2 !! 5
     let cell2 = (newState ^. matrix) !! 2 !! 3
@@ -295,7 +303,7 @@ createTestState8 = GameState
 testFindValidMoves8 :: Test
 testFindValidMoves8 = TestCase $ do
     let initialState = createTestState8
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 2 !! 3
     let cell2 = (newState ^. matrix) !! 1 !! 2
@@ -326,7 +334,7 @@ createTestState9 = GameState
 testFindValidMoves9 :: Test
 testFindValidMoves9 = TestCase $ do
     let initialState = createTestState9
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 2 !! 5
     let cell2 = (newState ^. matrix) !! 1 !! 4
@@ -395,7 +403,7 @@ createTestState10 = GameState
 testFindValidMoves10 :: Test
 testFindValidMoves10 = TestCase $ do
     let initialState = createTestState10
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 3 !! 3
     let cell2 = (newState ^. matrix) !! 2 !! 2
@@ -430,7 +438,7 @@ createTestState11 = GameState
 testFindValidMoves11 :: Test
 testFindValidMoves11 = TestCase $ do
     let initialState = createTestState11
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 3 !! 3
     let cell2 = (newState ^. matrix) !! 2 !! 2
@@ -465,7 +473,7 @@ createTestState12 = GameState
 testFindValidMoves12 :: Test
 testFindValidMoves12 = TestCase $ do
     let initialState = createTestState12
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 3 !! 3
     let cell2 = (newState ^. matrix) !! 1 !! 5
@@ -502,7 +510,7 @@ createTestState13 = GameState
 testFindValidMoves13 :: Test
 testFindValidMoves13 = TestCase $ do
     let initialState = createTestState13
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 5 !! 2
     let cell2 = (newState ^. matrix) !! 4 !! 3
@@ -516,7 +524,7 @@ testFindValidMoves13 = TestCase $ do
     assertEqual "Cell at (4, 3) should be unisAvailable, it has enemy piece" False (cell2 ^. isAvailable)
     assertEqual "Cell at (3, 4) should be isAvailable, it has a capture" True (cell3 ^. isAvailable)
     assertEqual "Cell at (2, 5) should be unisAvailable, it has enemy piece" False (cell4 ^. isAvailable)
-    assertEqual "Cell at (1, 6) should be isAvailable, it has multi capture" True (cell5 ^. isAvailable)
+    -- assertEqual "Cell at (1, 6) should be isAvailable, it has multi capture" True (cell5 ^. isAvailable)
 
 -- Test V type capture
 createTestState14 :: GameState
@@ -537,13 +545,14 @@ createTestState14 = GameState
 testFindValidMoves14 :: Test
 testFindValidMoves14 = TestCase $ do
     let initialState = createTestState14
-    let newState = findValidMoves initialState  
+    let newState = findValidMoves initialState False  
 
     let cell1 = (newState ^. matrix) !! 5 !! 2
     let cell2 = (newState ^. matrix) !! 4 !! 3
     let cell3 = (newState ^. matrix) !! 3 !! 4
     let cell4 = (newState ^. matrix) !! 2 !! 3
     let cell5 = (newState ^. matrix) !! 1 !! 2
+    let cell6 = (newState ^. matrix) !! 4 !! 1
 
 
 
@@ -551,4 +560,119 @@ testFindValidMoves14 = TestCase $ do
     assertEqual "Cell at (4, 3) should be unisAvailable, it has enemy piece" False (cell2 ^. isAvailable)
     assertEqual "Cell at (3, 4) should be isAvailable, it has a capture" True (cell3 ^. isAvailable)
     assertEqual "Cell at (2, 3) should be unisAvailable, it has enemy piece" False (cell4 ^. isAvailable)
-    assertEqual "Cell at (1, 2) should be isAvailable, it has multi capture" True (cell5 ^. isAvailable)
+    -- assertEqual "Cell at (1, 2) should be isAvailable, it has multi capture" True (cell5 ^. isAvailable)
+    assertEqual "Cell at (4, 1) should be isAvailable, it is an empty diagonal" True (cell6 ^. isAvailable)
+
+
+--- Testing MultiJump Version Only
+
+createTestState15 :: GameState
+createTestState15 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, player2, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, player2, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, player1, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    , _turn = P1
+    , _selected = Just (5, 2)  
+    }
+
+testFindValidMoves15 :: Test
+testFindValidMoves15 = TestCase $ do
+    let initialState = createTestState15
+    let newState = findValidMoves initialState True  
+
+    let cell1 = (newState ^. matrix) !! 5 !! 2
+    let cell2 = (newState ^. matrix) !! 4 !! 3
+    let cell3 = (newState ^. matrix) !! 3 !! 4
+    let cell4 = (newState ^. matrix) !! 2 !! 3
+    let cell5 = (newState ^. matrix) !! 1 !! 2
+    let cell6 = (newState ^. matrix) !! 4 !! 1
+
+
+
+    assertEqual "Cell at (2, 5) should be unisAvailable, it's the own piece" False (cell1 ^. isAvailable)
+    assertEqual "Cell at (4, 3) should be unisAvailable, it has enemy piece" False (cell2 ^. isAvailable)
+    assertEqual "Cell at (3, 4) should be isAvailable, it has a capture" True (cell3 ^. isAvailable)
+    assertEqual "Cell at (2, 3) should be unisAvailable, it has enemy piece" False (cell4 ^. isAvailable)
+    assertEqual "Cell at (4, 1) should not be available, it is an empty diagonal" False (cell6 ^. isAvailable)
+
+createTestState16 :: GameState
+createTestState16 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, player2, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, player1, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    , _turn = P1
+    , _selected = Just (5, 2)  
+    }
+
+testFindValidMoves16 :: Test
+testFindValidMoves16 = TestCase $ do
+    let initialState = createTestState16
+    let newState = findValidMoves initialState True  
+
+    let cell1 = (newState ^. matrix) !! 5 !! 2
+    let cell2 = (newState ^. matrix) !! 4 !! 3
+    let cell3 = (newState ^. matrix) !! 3 !! 4
+    let cell4 = (newState ^. matrix) !! 2 !! 3
+    let cell5 = (newState ^. matrix) !! 1 !! 2
+    let cell6 = (newState ^. matrix) !! 4 !! 1
+
+
+
+    assertEqual "Cell at (2, 5) should be unisAvailable, it's the own piece" False (cell1 ^. isAvailable)
+    assertEqual "Cell at (4, 3) should be unisAvailable, it has enemy piece" False (cell2 ^. isAvailable)
+    assertEqual "Cell at (3, 4) should be isAvailable, it has a capture" False (cell3 ^. isAvailable)
+    assertEqual "Cell at (2, 3) should be unisAvailable, it has enemy piece" False (cell4 ^. isAvailable)
+    assertEqual "Cell at (4, 1) should not be available, it is an empty diagonal" False (cell6 ^. isAvailable)
+
+
+-- Testing hasAvailableMove
+
+
+createTestState17 :: GameState
+createTestState17 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, availableCell, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    }
+
+testHasAvailable1 :: Test
+testHasAvailable1 = TestCase $
+    assertEqual "There is at least one available cell" True (hasAvailableMove (createTestState17 ^. matrix))
+
+createTestState18 :: GameState
+createTestState18 = GameState
+    { _matrix = [[noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               , [noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece, noPiece]
+               ]
+    , _turn = P1
+    , _selected = Just (5, 2)  
+    }
+
+testHasAvailable2 :: Test
+testHasAvailable2 = TestCase $
+    assertEqual "There are no available cells" False (hasAvailableMove (createTestState18 ^. matrix))
+

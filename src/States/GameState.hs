@@ -1,6 +1,6 @@
 {-# LANGUAGE TemplateHaskell #-}
 
-module GameState (makeInitialState, GameState(..), Cell(..), Player(..), isUnderCursor, isSelected, isAvailable, player, isKing, cursor, selected, matrix, p1Count, p2Count, turn) where
+module GameState (makeInitialState, GameState(..), Cell(..), Player(..), isUnderCursor, isSelected, isAvailable, player, isKing, cursor, selected, matrix, p1Count, p2Count, turn, isLocked) where
 import Control.Lens
 
 
@@ -23,6 +23,7 @@ data GameState = GameState
   , _p1Count   :: Int               -- Número de peças do jogador P1.
   , _p2Count   :: Int               -- Número de peças do jogador P2.
   , _turn      :: Player            -- Indica de quem é a vez.
+  , _isLocked  :: Bool              -- Indica se o jogador pode mudar a peça selecionada.
   } deriving (Show, Eq)
 
 makeLenses ''GameState
@@ -34,7 +35,8 @@ makeInitialState = GameState
   , _matrix   = makeInitialMatrix   
   , _p1Count  = 12              
   , _p2Count  = 12              
-  , _turn     = P1              
+  , _turn     = P1
+  , _isLocked = False              
   }
 
 makeInitialMatrix :: [[Cell]]

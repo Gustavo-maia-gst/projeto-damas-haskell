@@ -24,7 +24,7 @@ test-suite damas-test
     build-depends:        base >=4.7 && <5,
                           HUnit,
                           lens
-    hs-source-dirs:       app app/test
+    hs-source-dirs:       app src src/Handles src/States app/test
     other-modules:        TestMovementFinder 
     default-language:     Haskell2010
                 
