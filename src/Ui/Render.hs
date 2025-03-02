@@ -6,6 +6,7 @@ import GameState
 import Utils
 import CursesWrapper
 import Control.Lens
+import Data.Char (toLower, toUpper)
 import UI.HSCurses.Curses (scrSize)
 
 refresh :: GameState -> IO ()
@@ -88,9 +89,12 @@ makeChar i j state
 getCellChar :: Cell -> (Char, CellColor)
 getCellChar cell = (char, color)
   where
-      char = if cell ^. player == Just P1 then 'A' 
-             else if cell ^. player == Just P2 then 'B'
-             else ' '
+      playerChar = if cell ^. player == Just P1 then 'A' 
+                   else if cell ^. player == Just P2 then 'B'
+                   else ' '
+      
+      char = if cell ^. isKing then toUpper playerChar
+             else toLower playerChar 
 
       color = if cell ^. isUnderCursor then highlightColor
               else if cell ^. isSelected then selectedColor
