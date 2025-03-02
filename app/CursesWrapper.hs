@@ -38,7 +38,7 @@ initWrapper = do
   initPair baseColor white black
   initPair highlightColor white yellow
   initPair availableColor white cyan
-  initPair selectedColor white cyan
+  initPair selectedColor white blue
 
 refreshScreen :: Int -> Int -> [[(Char, CellColor)]] -> IO ()
 refreshScreen startLine startCol matrix = do
