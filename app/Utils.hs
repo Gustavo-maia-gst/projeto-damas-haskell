@@ -3,6 +3,7 @@ module Utils where
 import Control.Lens
 import GameState
 import Data.Bits
+import Data.List
 
 hasSelection :: GameState -> Bool
 hasSelection state = case state ^. selected of
@@ -52,3 +53,7 @@ reduceOpponentCount gameState =
   case gameState ^. turn of
     P1 -> gameState & p2Count %~ subtract 1  
     P2 -> gameState & p1Count %~ subtract 1
+
+-- Returns True if there is atleast one available cell
+hasAvailableMove :: [[Cell]] -> Bool
+hasAvailableMove matrix = any (any (^. isAvailable)) matrix

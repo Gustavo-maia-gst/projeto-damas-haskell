@@ -14,6 +14,7 @@ main = do
       testFindValidMoves4, testFindValidMoves5, testFindValidMoves6,
        testFindValidMoves7, testFindValidMoves8, testFindValidMoves9,
        testFindValidMoves10, testFindValidMoves11, testFindValidMoves12,
-       testFindValidMoves13, testFindValidMoves14, testFindValidMoves15])  
+       testFindValidMoves13, testFindValidMoves14, testFindValidMoves15, testFindValidMoves16,
+       testHasAvailable1, testHasAvailable2])  
 
 -- 'cabal test' to execute
