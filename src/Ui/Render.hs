@@ -19,12 +19,24 @@ refresh state = do
 
   clearScreen
 
-  move 2 25
-  wAddStr stdScr (if state ^. turn == P1 then "Jogador 1" else "Jogador 2")
-  move 3 25
-  wAddStr stdScr ((show (state ^. p1Count)) ++ "x" ++ (show (state ^. p2Count)))
+  writeHeaders state
 
   refreshScreen 0 startCol charMatrix
+
+writeHeaders :: GameState -> IO ()
+writeHeaders state = do
+  move 2 15
+  wAddStr stdScr "Turno"
+  move 3 15
+  wAddStr stdScr (if state ^. turn == P1 then "Jogador 1" else "Jogador 2")
+
+
+  move 5 15
+  wAddStr stdScr "Peças"
+  move 6 15
+  wAddStr stdScr ("P1: " ++ (show (state ^. p1Count)))
+  move 7 15
+  wAddStr stdScr ("P2: " ++ (show (state ^. p2Count)))
   
 makeMatrixChar :: GameState -> [[(Char, CellColor)]]
 makeMatrixChar state = 
