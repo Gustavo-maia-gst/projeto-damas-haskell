@@ -20,7 +20,7 @@ printTexts (t:ts) indAt indCursor = do
     printTexts ts (indAt + 1) indCursor
 
 textHowToPlay :: String
-textHowToPlay = "Para se mover utilize as teclas W, A, S, D\nPara selecionar use a tecla ESPAÇO\nAo selecionar uma peça aparecerá os possiveis movimentos para ela, caso seja de múltiplos movimentos terá que fazer movimento por movimento"
+textHowToPlay = "Para se mover utilize as teclas W, A, S, D, ou as setas\nPara selecionar use a tecla ESPAÇO ou ENTER\nAo selecionar uma peça aparecerá os possiveis movimentos para ela, caso seja de múltiplos movimentos terá que fazer movimento por movimento\nAo virar dama poderá se mover para as 4 diagonais"
 
 howPlay :: IO()
 howPlay = do
@@ -37,20 +37,29 @@ howPlay = do
     refresh
 
     key <- getCh  
-    when (key /= KeyChar ' ') howPlay 
+    when (key /= KeyChar ' ' && key /= KeyChar '\n') howPlay 
 
 options :: Int -> IO Int
 options x = do
     wclear stdScr
-    printCentered "Para selecionar aperte ESPAÇO" 0
-    printTexts ["Contra outro jogador", "Contra Plinio", "Como jogar"] 0 x
+    printCentered "Mova com W,S ou Up, Down. Para selecionar aperte ESPAÇO ou ENTER" 0
+    printTexts ["Contra outro jogador", "Contra Plinio (bot)", "Como jogar"] 0 x
     refresh
     key <- getCh  
 
     case key of
         KeyChar 'w' -> options (max 0 (x - 1))  
+        KeyUp -> options (max 0 (x - 1))  
+
         KeyChar 's' -> options (min 2 (x + 1))  
+        KeyDown -> options (min 2 (x + 1))  
+
         KeyChar ' ' -> if x == 2
+                       then do
+                           howPlay
+                           options 2
+                       else return x
+        KeyChar '\n' -> if x == 2
                        then do
                            howPlay
                            options 2
