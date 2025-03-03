@@ -3,7 +3,7 @@ module Plinio (handleTurn) where
 import GameState
 import Control.Lens
 import Utils
-import HandleMovement (move, destroyer)
+import HandleMovement
 
 handleTurn :: GameState -> GameState
 handleTurn state = newState
@@ -52,10 +52,11 @@ makeMove state (i, j, eating)
     stateWithCursor = state & cursor .~ (i, j)
 
 moveWrapper :: GameState -> GameState
-moveWrapper state = newState
+moveWrapper state = unlock newState
   where
-    stateAux0 = destroyer state
-    newState = move stateAux0
+    cleanState  = unlock state
+    stateAux0   = destroyer cleanState
+    newState    = move stateAux0
 
 tryKeepEating :: GameState -> GameState
 tryKeepEating state
