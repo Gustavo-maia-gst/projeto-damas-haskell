@@ -25,3 +25,8 @@ handleSelection state
 
         stateAux = state & selected .~ Just (cursorY, cursorX)
         newState = findValidMoves stateAux False
+
+closeSelection :: GameState -> GameState
+closeSelection state 
+    | state ^. isLocked == True  = state
+    | otherwise                  = clearSelection state

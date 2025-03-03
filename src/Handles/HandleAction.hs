@@ -3,13 +3,13 @@ module HandleAction where
 import GameState
 import Control.Lens
 import Utils (hasSelection, clearSelection)
-import HandleSelection (handleSelection)
+import HandleSelection (handleSelection, closeSelection)
 import HandleMovement
 
 handleAction :: GameState -> GameState
 handleAction state 
     | havingSelection && inAvailable     = handleMovement state
-    | havingSelection && not inAvailable = clearSelection state
+    | havingSelection && not inAvailable = closeSelection state
     | otherwise                          = handleSelection state
   where
     line            = state ^. cursor ^. _1

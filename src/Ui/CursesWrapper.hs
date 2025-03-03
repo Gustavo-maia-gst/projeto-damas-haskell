@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module CursesWrapper (initWrapper, refreshScreen, baseColor, highlightColor, availableColor, selectedColor, CellColor) where
+module CursesWrapper (initWrapper, clearScreen, refreshScreen, baseColor, highlightColor, availableColor, selectedColor, CellColor) where
 
 import GHC.IO.Encoding (setLocaleEncoding, utf8)
 import UI.HSCurses.Curses
@@ -42,9 +42,11 @@ initWrapper = do
 
 refreshScreen :: Int -> Int -> [[(Char, CellColor)]] -> IO ()
 refreshScreen startLine startCol matrix = do
-  wclear stdScr
   refreshLoop startLine startCol startLine startCol matrix
   refresh 
+
+clearScreen :: IO ()
+clearScreen = wclear stdScr
 
 refreshLoop :: Int -> Int -> Int -> Int -> [[(Char, CellColor)]] -> IO ()
 refreshLoop startLine startCol line col matrix
@@ -61,5 +63,7 @@ updatePoint :: Int -> Int -> Int -> Int -> [[(Char, CellColor)]] -> IO ()
 updatePoint startLine startCol line col matrix = do
   let (char, color) = (matrix !! (line - startLine)) !! (col - startCol)
   attrSet attr0 color
-  mvAddCh line col (fromIntegral (ord char))
+  move line col
+  wAddStr stdScr [char]
+  -- mvAddCh line col (fromIntegral (ord char))
   attrSet attr0 baseColor
