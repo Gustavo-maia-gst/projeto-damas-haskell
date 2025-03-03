@@ -43,7 +43,7 @@ options :: Int -> IO Int
 options x = do
     wclear stdScr
     printCentered "Para selecionar aperte ESPAÇO" 0
-    printTexts ["Contra outro jogador", "Contra bot", "Como jogar"] 0 x
+    printTexts ["Contra outro jogador", "Contra Plinio", "Como jogar"] 0 x
     refresh
     key <- getCh  
 

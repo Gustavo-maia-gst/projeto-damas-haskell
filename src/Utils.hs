@@ -35,6 +35,11 @@ isEnemy cell currentPlayer = case cell ^. player of
     Just p  -> p /= currentPlayer  
     Nothing -> False     
 
+getMoveDirections :: Player -> Bool -> [(Int, Int)]
+getMoveDirections _ True = [(1, -1), (1, 1), (-1 , 1), (-1, -1)] -- King can move in any direction
+getMoveDirections P2 _ = [(1, -1), (1, 1)]  -- Up-left and up-right for P1
+getMoveDirections P1 _ = [(-1, -1), (-1, 1)] -- Down-left and down-right for P2
+getMoveDirections _ _        = []  -- No valid moves if no player
 
 changeTurn :: GameState -> GameState
 changeTurn state = newState

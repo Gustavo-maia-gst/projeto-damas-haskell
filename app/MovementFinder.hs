@@ -25,12 +25,6 @@ findValidMoves state isMultiJump = case state ^. selected of
 
 
 
-getMoveDirections :: Player -> Bool -> [(Int, Int)]
-getMoveDirections _ True = [(1, -1), (1, 1), (-1 , 1), (-1, -1)] -- King can move in any direction
-getMoveDirections P2 _ = [(1, -1), (1, 1)]  -- Up-left and up-right for P1
-getMoveDirections P1 _ = [(-1, -1), (-1, 1)] -- Down-left and down-right for P2
-getMoveDirections _ _        = []  -- No valid moves if no player
-
 checkDirection :: GameState -> (Int, Int) -> (Int, Int) -> Bool -> [(Int, Int)] -> GameState
 checkDirection state (dx, dy) (x, y) isMultiJump direction
     | not (isInBounds newX newY) = state -- Out of bounds, return unchaged
