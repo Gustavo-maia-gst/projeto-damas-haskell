@@ -45,7 +45,6 @@ changeTurn :: GameState -> GameState
 changeTurn state = newState
   where
     vez = state ^. turn
-    --
     newState = if vez == P1 
                then state & turn .~ P2
                else state & turn .~ P1
@@ -60,5 +59,11 @@ reduceOpponentCount gameState =
     P2 -> gameState & p1Count %~ subtract 1
 
 -- Returns True if there is atleast one available cell
-hasAvailableMove :: [[Cell]] -> Bool
-hasAvailableMove matrix = any (any (^. isAvailable)) matrix
+hasAvailableMove :: GameState -> Bool
+hasAvailableMove state = any (any (^. isAvailable)) (state ^.matrix)
+
+lock :: GameState -> GameState
+lock state = state & isLocked .~ True
+
+unlock :: GameState -> GameState
+unlock state = state & isLocked .~ False
