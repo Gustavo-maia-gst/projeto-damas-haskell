@@ -14,7 +14,7 @@ executable damas
                       HUnit
     hs-source-dirs:   app src src/Handles src/States src/Ui
     default-language: Haskell2010
-    other-modules:    GameState, HandleSelection, Utils, MovementFinder, CursesWrapper, Render, Navigation, HandleAction, HandleMovement, EventLoop, InitialScreen
+    other-modules:    GameState, HandleSelection, Utils, MovementFinder, CursesWrapper, Render, Navigation, HandleAction, HandleMovement, Plinio, EventLoop, InitialScreen
     extra-libraries: panelw ncursesw
 
 
