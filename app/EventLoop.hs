@@ -33,9 +33,17 @@ eventLoop opt state = do
 
   let newState = case key of
           KeyChar 'w'   ->  handleUp stateAux
+          KeyUp   ->  handleUp stateAux
+
           KeyChar 's'   ->  handleDown stateAux
+          KeyDown   ->  handleDown stateAux
+
           KeyChar 'a'   ->  handleLeft stateAux
+          KeyLeft   ->  handleLeft stateAux
+
           KeyChar 'd'   ->  handleRight stateAux
+          KeyRight   ->  handleRight stateAux
+          
           KeyChar ' '   ->  handleAction stateAux
           KeyChar '\n'  ->  handleAction stateAux
           _             ->  stateAux  -- Se qualquer outra tecla for pressionada, não muda o estado
