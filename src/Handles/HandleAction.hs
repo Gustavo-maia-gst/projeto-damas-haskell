@@ -8,10 +8,13 @@ import HandleMovement
 
 handleAction :: GameState -> GameState
 handleAction state 
-    | havingSelection && inAvailable     = handleMovement state
-    | havingSelection && not inAvailable = closeSelection state
-    | otherwise                          = handleSelection state
+    | locked && inAvailable                    = handleMovement state
+    | locked                                   = state
+    | havingSelection && inAvailable           = handleMovement state
+    | havingSelection && not inAvailable       = closeSelection state
+    | otherwise                                = handleSelection state
   where
+    locked          = state ^. isLocked
     line            = state ^. cursor ^. _1
     col             = state ^. cursor ^. _2
     havingSelection = state ^. selected /= Nothing
