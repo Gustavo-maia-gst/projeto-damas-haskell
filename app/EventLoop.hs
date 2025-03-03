@@ -12,6 +12,7 @@ import System.Exit (exitSuccess)
 import Plinio (handleTurn)
 import Navigation
 import HandleAction
+import InitialScreen
 
 
 init :: Int -> IO ()
@@ -23,6 +24,8 @@ init opt = do
 eventLoop :: Int -> GameState -> IO ()
 eventLoop opt state = do
   let stateAux = if state ^. turn == P2 && opt == 1 then handleTurn state else state
+
+  checkEndGame stateAux opt
 
   R.refresh stateAux
 
@@ -41,4 +44,25 @@ eventLoop opt state = do
   if key == KeyChar 'q'
     then endWin >> exitSuccess
     else eventLoop opt newState
-  
+
+checkEndGame :: GameState -> Int -> IO ()
+checkEndGame state opt
+  | isBot && p1Qtd == 0  = do
+    printEnd "Plinio"
+  | p1Qtd == 0           = do
+    printEnd "Jogador 2"
+  | p2Qtd == 0           = do
+    printEnd "Jogador 1"
+  | otherwise              = return ()
+  where
+    p1Qtd   = state ^. p1Count
+    p2Qtd   = state ^. p2Count
+    isBot   = opt == 1
+
+printEnd :: String -> IO ()
+printEnd text = do
+  printCentered text 10
+
+  key <- getCh 
+
+  endWin >> exitSuccess
