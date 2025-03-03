@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Render (refresh) where
+module Render (refreshBoard) where
 
 import GameState
 import Utils
@@ -9,8 +9,8 @@ import Control.Lens
 import Data.Char (toLower, toUpper)
 import UI.HSCurses.Curses (stdScr, wAddStr, scrSize, move)
 
-refresh :: GameState -> IO ()
-refresh state = do
+refreshBoard :: GameState -> IO ()
+refreshBoard state = do
   let charMatrix = makeMatrixChar state
 
   (lines, cols) <- scrSize

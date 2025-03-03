@@ -5,7 +5,7 @@ import UI.HSCurses.Curses
 import UI.HSCurses.CursesHelper
 import GameState
 import CursesWrapper (initWrapper)
-import Render as R
+import Render
 import Control.Monad (when)
 import Control.Lens
 import System.Exit (exitSuccess)
@@ -27,7 +27,7 @@ eventLoop opt state = do
 
   checkEndGame stateAux opt
 
-  R.refresh stateAux
+  refreshBoard stateAux
 
   key <- getCh 
 
@@ -61,7 +61,9 @@ checkEndGame state opt
 
 printEnd :: String -> IO ()
 printEnd text = do
-  printCentered text 10
+  wclear stdScr
+  printCentered (text ++ "Ganhou !!") 10
+  refresh
 
   key <- getCh 
 
