@@ -17,14 +17,14 @@ explore state = foldl
                   if snd (getBest state i j) > bestScore then getBest state i j
                   else (bestState, bestScore)
                 ) 
-                (state, -9999)
+                (state, worstScore)
                 possibleCells
   where
     possibleCells = filter (\(i, j) -> (getCell i j state) ^. player == Just P2) [(i, j) | i <- [0 .. 7], j <- [0 .. 7]]
 
 getBest :: GameState -> Int -> Int -> (GameState, Int)
 getBest state i j
-    | length moves == 0   = (stateWithSelected, 0)
+    | length moves == 0   = (stateWithSelected, worstScore)
     | otherwise           = getBestLoop stateWithSelected 0 moves
   where
     stateWithSelected = state & selected .~ Just (i, j)
@@ -32,7 +32,7 @@ getBest state i j
 
 getBestLoop :: GameState -> Int -> [(Int, Int, Bool)] -> (GameState, Int)
 getBestLoop state i moves
-    | i == movesSize  = (state, 0)
+    | i == movesSize  = (state, worstScore)
     | otherwise       = if moveStateScore > loopStateScore then 
                           (moveState, moveStateScore)
                         else
@@ -56,7 +56,9 @@ moveWrapper state = unlock newState
   where
     cleanState  = unlock state
     stateAux0   = destroyer cleanState
-    newState    = move stateAux0
+    stateAux1   = move stateAux0
+    stateAux2   = setAllCellsUnavailable stateAux1
+    newState    = stateAux2 & selected .~ Nothing
 
 tryKeepEating :: GameState -> GameState
 tryKeepEating state
@@ -89,23 +91,62 @@ directionMove state i j di dj
     (jumpI, jumpJ) = (i + 2 * di, j + 2 * dj)
 
 getScore :: GameState -> Int
-getScore state = ((state ^. p2Count) - (state ^. p1Count)) * advantageMultiplier - unprotectedPenalty * (state ^. p2Count - (getUnprotectedQtd state))
+getScore state = ((state ^. p2Count) - (state ^. p1Count)) * advantageMultiplier - (unprotectedPenalty * (getUnprotectedVal state))
 
-getUnprotectedQtd :: GameState -> Int
-getUnprotectedQtd state = length (filter (\v -> v) [isUnprotected state i j | j <- [1 .. 6], i <- [1 .. 6]])
+getUnprotectedVal :: GameState -> Int
+getUnprotectedVal state = sum [unprotectedVal state i j | j <- [1 .. 6], i <- [1 .. 6]]
 
-isUnprotected :: GameState -> Int -> Int -> Bool
-isUnprotected state i j = 
-    if state ^. turn == P2 then
-      (isEmpty (getCell (i - 1) (j + 1) state) || isEmpty (getCell (i - 1) (j - 1) state)) 
-    else 
-      False
+unprotectedVal :: GameState -> Int -> Int -> Int
+unprotectedVal state i j = pen1 + pen2 + pen3 + pen4
   where
-    mat      = state ^. matrix
-    cell     = getCell i j state 
+    (ei1, ej1)  = (i + 1, j - 1)
+    (ei2, ej2)  = (i + 1, j + 1)
+    (i1, j1)    = (i - 1, j - 1)
+    (i2, j2)    = (i - 1, j + 1)
+    isVuln      = isCellVuln state i j
+    pen1        = if isVuln && isEnemy (getCell ei1 ej1 state) P2 then 3 else 0
+    pen2        = if isVuln && isEnemy (getCell ei2 ej2 state) P2 then 3 else 0
+    pen3        = if isVuln then 1 else 0
+    pen4        = if isVuln && hasDoubleKill state i j then 8 else 0
+
+hasDoubleKill :: GameState -> Int -> Int -> Bool
+hasDoubleKill state i j
+  | not cellInBounds                      = False
+  | i < 2                                 = False
+  | not cellVuln                          = False
+  | not leftIsEnemy && not rightIsEnemy   = False
+  | leftIsEnemy && rightIsVuln            = True
+  | rightIsEnemy && leftIsVuln            = True
+  | otherwise                             = False
+  where
+    cellInBounds    = isInBounds i j
+    cellVuln        = isCellVuln state i j
+    leftIsVuln      = isCellVuln state (i - 2) (j - 2)
+    rightIsVuln     = isCellVuln state (i - 2) (j + 2)
+    leftIsEnemy     = isInBounds (i + 1) (j - 1) && isEnemy (getCell (i + 1) (j - 1) state) P2
+    rightIsEnemy    = isInBounds (i + 1) (j + 1) && isEnemy (getCell (i + 1) (j + 1) state) P2
+
+isCellVuln :: GameState -> Int -> Int -> Bool
+isCellVuln state i j
+    | not cellInBounds                      = False
+    | cell ^. player /= Just P2             = False
+    | not leftInBounds && not rightInBounds = False
+    | not leftInBounds                      = rigthIsEmpty
+    | not rightInBounds                     = leftIsEmpty
+    | otherwise                             = rigthIsEmpty || leftIsEmpty
+  where
+    cellInBounds  = isInBounds i j
+    cell          = getCell i j state
+    leftInBounds  = isInBounds (i - 1) (j - 1)
+    rightInBounds = isInBounds (i - 1) (j + 1)
+    leftIsEmpty   = isEmpty (getCell (i - 1) (j - 1) state)
+    rigthIsEmpty  = isEmpty (getCell (i - 1) (j + 1) state)
 
 unprotectedPenalty :: Int
 unprotectedPenalty = 1
 
 advantageMultiplier :: Int
-advantageMultiplier = 8
+advantageMultiplier = 15
+
+worstScore :: Int
+worstScore = -99999
