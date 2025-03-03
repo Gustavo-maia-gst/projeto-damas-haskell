@@ -7,7 +7,7 @@ import Utils
 import CursesWrapper
 import Control.Lens
 import Data.Char (toLower, toUpper)
-import UI.HSCurses.Curses (scrSize)
+import UI.HSCurses.Curses (stdScr, wAddStr, scrSize, move)
 
 refresh :: GameState -> IO ()
 refresh state = do
@@ -16,6 +16,13 @@ refresh state = do
   (lines, cols) <- scrSize
 
   let startCol = (cols - (length (head charMatrix))) `div` 2
+
+  clearScreen
+
+  move 2 25
+  wAddStr stdScr (if state ^. turn == P1 then "Jogador 1" else "Jogador 2")
+  move 3 25
+  wAddStr stdScr ((show (state ^. p1Count)) ++ "x" ++ (show (state ^. p2Count)))
 
   refreshScreen 0 startCol charMatrix
   
@@ -34,67 +41,49 @@ makeMatrixChar state =
 
 makeChar :: Int -> Int -> GameState -> (Char, CellColor)
 makeChar i j state
-  -- | i == 0 && j == 0                  = ('┌', baseColor)
+  | i == 0 && j == 0                  = ('┌', baseColor)
 
-  -- | i == 0 && j == endCol             = ('┐', baseColor)
+  | i == 0 && j == endCol             = ('┐', baseColor)
 
-  -- | i == endLine && j == endCol        = ('┘', baseColor)
+  | i == endLine && j == endCol        = ('┘', baseColor)
 
-  -- | i == endLine && j == 0            = ('└', baseColor)
+  | i == endLine && j == 0            = ('└', baseColor)
 
-  -- | i == 0 && heigthMod == 0          = ('┬', baseColor)
+  | i == 0 && heigthMod == 0          = ('┬', baseColor)
 
-  -- | i == endLine && heigthMod == 0    = ('┴', baseColor)
+  | i == endLine && heigthMod == 0    = ('┴', baseColor)
 
-  -- | j == 0 && lineMod == 0            = ('├', baseColor)
+  | j == 0 && lineMod == 0            = ('├', baseColor)
 
-  -- | j == endCol && lineMod == 0       = ('┤', baseColor)
+  | j == endCol && lineMod == 0       = ('┤', baseColor)
 
-  -- | lineMod == 0 && heigthMod == 0    = ('┼', baseColor)
+  | lineMod == 0 && heigthMod == 0    = ('┼', baseColor)
 
-  -- | lineMod == 0                      = ('─', baseColor)
+  | lineMod == 0                      = ('─', baseColor)
 
-  -- | heigthMod == 0                    = ('│', baseColor)
+  | heigthMod == 0                    = ('│', baseColor)
 
-  | i == 0 && j == 0                  = ('|', baseColor)
-
-  | i == 0 && j == endCol             = ('|', baseColor)
-
-  | i == endLine && j == endCol        = ('|', baseColor)
-
-  | i == endLine && j == 0            = ('|', baseColor)
-
-  | i == 0 && heigthMod == 0          = ('|', baseColor)
-
-  | i == endLine && heigthMod == 0    = ('|', baseColor)
-
-  | j == 0 && lineMod == 0            = ('|', baseColor)
-
-  | j == endCol && lineMod == 0       = ('|', baseColor)
-
-  | lineMod == 0 && heigthMod == 0    = ('|', baseColor)
-
-  | lineMod == 0                      = ('-', baseColor)
-
-  | heigthMod == 0                    = ('|', baseColor)
-
-  | otherwise                         = getCellChar (getCell (i `div` (cellHeigth + 1)) (j `div` (cellWidth + 1)) state)
+  | otherwise                         = getCellChar (getCell cellLine cellCol state) (heigthMod == 2)
   where
     mat         = state ^. matrix
     lineMod     = i `mod` (cellHeigth + 1)
     heigthMod   = j `mod` (cellWidth + 1)
-    endLine     = (cellHeigth + 1) * (length mat) + 1
-    endCol      = (cellWidth + 1) * (length (head mat)) + 1
+    endLine     = (cellHeigth + 1) * (length mat)
+    endCol      = (cellWidth + 1) * (length (head mat))
+    cellLine    = i `div` (cellHeigth + 1)
+    cellCol     = j `div` (cellWidth + 1)
   
-getCellChar :: Cell -> (Char, CellColor)
-getCellChar cell = (char, color)
+getCellChar :: Cell -> Bool -> (Char, CellColor)
+getCellChar cell isMiddle = (char, color)
   where
-      playerChar = if cell ^. player == Just P1 then 'A' 
-                   else if cell ^. player == Just P2 then 'B'
-                   else ' '
+      playerChar = if not isMiddle || cell ^. player == Nothing then ' '
+                   else if cell ^. player == Just P1 then '●' 
+                   else '○'
       
-      char = if cell ^. isKing then toUpper playerChar
-             else toLower playerChar 
+      char = if cell ^. isKing then
+             if cell ^. player == Just P1 then '◉'
+             else '◍'
+             else playerChar 
 
       color = if cell ^. isUnderCursor then highlightColor
               else if cell ^. isSelected then selectedColor

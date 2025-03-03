@@ -44,7 +44,3 @@ checkDirection state (dx, dy) (x, y) isMultiJump direction
         targetCell = getCell newX newY state
         jumpTargetCell = getCell jumpX jumpY state
         player = state ^. turn
-        
-
-
-
