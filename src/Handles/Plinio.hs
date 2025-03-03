@@ -17,7 +17,7 @@ explore state = foldl
                   if snd (getBest state i j) > bestScore then getBest state i j
                   else (bestState, bestScore)
                 ) 
-                (state, 0)
+                (state, -9999)
                 possibleCells
   where
     possibleCells = filter (\(i, j) -> (getCell i j state) ^. player == Just P2) [(i, j) | i <- [0 .. 7], j <- [0 .. 7]]
