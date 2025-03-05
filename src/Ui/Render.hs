@@ -34,9 +34,9 @@ writeHeaders state startCol = do
   move 5 startCol
   wAddStr stdScr "Peças"
   move 6 startCol
-  wAddStr stdScr ("P1: " ++ (show (state ^. p1Count)))
+  wAddStr stdScr ("● P1: " ++ (show (state ^. p1Count)))
   move 7 startCol
-  wAddStr stdScr ("P2: " ++ (show (state ^. p2Count)))
+  wAddStr stdScr ("○ P2: " ++ (show (state ^. p2Count)))
   
 makeMatrixChar :: GameState -> [[(Char, CellColor)]]
 makeMatrixChar state = 
