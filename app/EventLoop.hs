@@ -70,7 +70,7 @@ checkEndGame state opt
 printEnd :: String -> IO ()
 printEnd text = do
   wclear stdScr
-  printCentered (text ++ "Ganhou !!") 10
+  printCentered (text ++ " Ganhou!! 🥳🥳") 10
   refresh
 
   key <- getCh 
