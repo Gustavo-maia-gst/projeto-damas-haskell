@@ -655,7 +655,7 @@ createTestState17 = GameState
 
 testHasAvailable1 :: Test
 testHasAvailable1 = TestCase $
-    assertEqual "There is at least one available cell" True (hasAvailableMove (createTestState17 ^. matrix))
+    assertEqual "There is at least one available cell" True (hasAvailableMove (createTestState17))
 
 createTestState18 :: GameState
 createTestState18 = GameState
@@ -674,5 +674,5 @@ createTestState18 = GameState
 
 testHasAvailable2 :: Test
 testHasAvailable2 = TestCase $
-    assertEqual "There are no available cells" False (hasAvailableMove (createTestState18 ^. matrix))
+    assertEqual "There are no available cells" False (hasAvailableMove (createTestState18))
 
