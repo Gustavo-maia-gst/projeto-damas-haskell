@@ -6,14 +6,15 @@ docker build . -t haskell:damas
 docker run -it haskell:damas /bin/sh
 ```
 
-Para rodar o programa primeiro faça o build
+Para rodar o programa primeiro faça o download das bibliotecas
 
 ```bash
-cabal build
+cabal install
 ```
 
-Após, rode o programa
+Após, faça o build e rode o programa
 
 ```sh
+cabal build
 cabal run
 ```
